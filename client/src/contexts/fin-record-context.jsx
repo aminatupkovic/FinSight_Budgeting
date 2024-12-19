@@ -1,12 +1,27 @@
 //states and functions for states
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
+import {useUser} from "@clerk/clerk-react";
 
 // Creating a context for financial records
 export const FinRecordsContext = createContext(undefined);
 
 export const FinRecordProvider = ({ children }) => {
     const [records, setRecords] = useState([]);
+    const {user} = useUser();
+    const fetchRecords = async () => {
+        if(!user) return;
+        const response = await fetch(`http://localhost:8081/fin-records/getAllByUserID/${user?.id}`);
+        if(response.ok) {
+            const records = await response.json()
+            console.log(records);
+            setRecords(records);
+        }
+    };
+
+    useEffect(() => {
+        fetchRecords();
+    }, [user]);
 
     const addRecord = async (record) => {
         try {
@@ -46,6 +61,14 @@ export const FinRecordProvider = ({ children }) => {
             {children}
         </FinRecordsContext.Provider>
     );
+};
+
+export const useFinancialRecords = () => {
+    const context = useContext(FinRecordsContext);
+    if (context === undefined) {
+        throw new Error("useFinancialRecords must be used within a FinRecordProvider");
+    }
+    return context;
 };
 
 
