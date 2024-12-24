@@ -48,8 +48,32 @@ export const FinRecordProvider = ({ children }) => {
         }
     };
 
-    const updateRecord = (id, newRecord) => {
-        setRecords(records.map((record) => (record.id === id ? newRecord : record)));
+    const updateRecord = async (id, updatedField) => {
+        try {
+            if (!user) return;
+            const response = await fetch(`http://localhost:8081/fin-records/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedField),
+            
+            });
+            console.log("Response status:", response.status);
+
+            if (response.ok) { 
+                const newRecord = await response.json();
+                setRecords((prev) =>
+                    prev.map((record) => (record.id === id ? { ...record, ...updatedRecord } : record))
+                
+            );
+            }
+            else {
+                console.error("Failed to add record:", response.statusText);
+              }
+        } catch (err) {
+            console.error("Failed to add record:", err);
+        }
     };
 
     const deleteRecord = (id) => {

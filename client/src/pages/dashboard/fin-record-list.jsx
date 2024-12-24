@@ -10,7 +10,11 @@ const EditableCell = ({ value: initialValue, row, column, updateRecord, editable
 
     const onBlur = () => {
         setIsEditing(false);
-        updateRecord(row.index, column.id, value);
+        console.log("Row data:", row.original);
+        if (value !== initialValue) {
+            updateRecord(row.original._id || row.original.id, column.id, value);
+        }
+        
     };
 
     return (
@@ -33,11 +37,13 @@ const EditableCell = ({ value: initialValue, row, column, updateRecord, editable
 };
 
 export const FinancialRecordList = () => {
-    const { records } = useFinancialRecords();
+    const { records, updateRecord } = useFinancialRecords();
 
-    const updateRecord = (rowIndex, columnId, value) => {
-        console.log(`Updated row ${rowIndex}, column ${columnId} with value:`, value);
-        // Update logic to be implemented
+    const handleUpdateRecord = async (id, columnId, value) => {
+        console.log(`Updated row ${id}, column ${columnId} with value:`, value);
+        const updatedField = { [columnId]: value};
+        await updateRecord(id, updatedField); 
+       
     };
 
     const deleteRecord = (rowIndex) => {
@@ -51,35 +57,35 @@ export const FinancialRecordList = () => {
                 Header: "Description",
                 accessor: "description",
                 Cell: (props) => (
-                    <EditableCell {...props} updateRecord={updateRecord} editable={true} />
+                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
                 ),
             },
             {
                 Header: "Amount",
                 accessor: "amount",
                 Cell: (props) => (
-                    <EditableCell {...props} updateRecord={updateRecord} editable={true} />
+                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
                 ),
             },
             {
                 Header: "Category",
                 accessor: "category",
                 Cell: (props) => (
-                    <EditableCell {...props} updateRecord={updateRecord} editable={true} />
+                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
                 ),
             },
             {
                 Header: "Payment",
                 accessor: "payment",
                 Cell: (props) => (
-                    <EditableCell {...props} updateRecord={updateRecord} editable={true} />
+                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
                 ),
             },
             {
                 Header: "Date",
                 accessor: "date",
                 Cell: (props) => (
-                    <EditableCell {...props} updateRecord={updateRecord} editable={false} />
+                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={false} />
                 ),
             },
             {
