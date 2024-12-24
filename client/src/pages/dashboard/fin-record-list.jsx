@@ -10,9 +10,9 @@ const EditableCell = ({ value: initialValue, row, column, updateRecord, editable
 
     const onBlur = () => {
         setIsEditing(false);
-        console.log("Row data:", row.original);
+        console.log("EditableCell onBlur triggered for:", row.original);
         if (value !== initialValue) {
-            updateRecord(row.original._id || row.original.id, column.id, value);
+            updateRecord(row.original._id, column.id, value);
         }
         
     };
@@ -101,7 +101,7 @@ export const FinancialRecordList = () => {
                 ),
             },
         ],
-        []
+        [records]
     );
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({

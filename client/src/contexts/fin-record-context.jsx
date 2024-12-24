@@ -49,6 +49,9 @@ export const FinRecordProvider = ({ children }) => {
     };
 
     const updateRecord = async (id, updatedField) => {
+        console.log("Updating record with ID:", id);
+        console.log("Updated field:", updatedField);
+    
         try {
             if (!user) return;
             const response = await fetch(`http://localhost:8081/fin-records/${id}`, {
@@ -57,24 +60,29 @@ export const FinRecordProvider = ({ children }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(updatedField),
-            
             });
+    
             console.log("Response status:", response.status);
-
-            if (response.ok) { 
-                const newRecord = await response.json();
-                setRecords((prev) =>
-                    prev.map((record) => (record.id === id ? { ...record, ...updatedRecord } : record))
-                
-            );
+    
+            if (response.ok) {
+                const updatedRecord = await response.json();
+                console.log("Record updated successfully:", updatedRecord);
+    
+                setRecords((prev) => {
+                    const updated = prev.map((record) =>
+                        record._id === id ? { ...record, ...updatedField } : record
+                    );
+                    console.log("Updated records state:", updated);
+                    return updated;
+                });
+            } else {
+                console.error("Failed to update record:", response.statusText);
             }
-            else {
-                console.error("Failed to add record:", response.statusText);
-              }
         } catch (err) {
-            console.error("Failed to add record:", err);
+            console.error("Error while updating record:", err);
         }
     };
+    
 
     const deleteRecord = (id) => {
         setRecords(records.filter((record) => record.id !== id));
