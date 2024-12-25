@@ -37,7 +37,7 @@ const EditableCell = ({ value: initialValue, row, column, updateRecord, editable
 };
 
 export const FinancialRecordList = () => {
-    const { records, updateRecord } = useFinancialRecords();
+    const { records, updateRecord, deleteRecord } = useFinancialRecords();
 
     const handleUpdateRecord = async (id, columnId, value) => {
         console.log(`Updated row ${id}, column ${columnId} with value:`, value);
@@ -45,11 +45,13 @@ export const FinancialRecordList = () => {
         await updateRecord(id, updatedField); 
        
     };
-
-    const deleteRecord = (rowIndex) => {
-        console.log(`Delete row ${rowIndex}`);
-        // Delete logic to be implemented
+    const handleDeleteRecord = (id) => {
+        if (window.confirm("Are you sure you want to delete this record?")) {
+            deleteRecord(id);
+        }
     };
+
+    
 
     const columns = useMemo(
         () => [
@@ -93,7 +95,7 @@ export const FinancialRecordList = () => {
                 id: "delete",
                 Cell: ({ row }) => (
                     <button
-                        onClick={() => deleteRecord(row.index)}
+                        onClick={() => handleDeleteRecord(row.original._id ?? "")}
                         className="button"
                     >
                         Delete

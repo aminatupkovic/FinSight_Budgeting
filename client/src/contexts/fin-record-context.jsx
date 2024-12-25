@@ -84,9 +84,25 @@ export const FinRecordProvider = ({ children }) => {
     };
     
 
-    const deleteRecord = (id) => {
-        setRecords(records.filter((record) => record.id !== id));
+    const deleteRecord = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:8081/fin-records/${id}`, {
+                method: "DELETE",
+            });
+    
+            console.log("Response status:", response.status);
+    
+            if (response.ok) {
+                setRecords((prev) => prev.filter((record) => record._id !== id));
+                console.log(`Record with ID ${id} deleted successfully`);
+            } else {
+                console.error("Failed to delete record:", response.statusText);
+            }
+        } catch (err) {
+            console.error("Failed to delete record:", err);
+        }
     };
+    
 
     return (
         <FinRecordsContext.Provider value={{ records, addRecord, updateRecord, deleteRecord }}>
