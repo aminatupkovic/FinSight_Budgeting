@@ -1,145 +1,55 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { useFinancialRecords } from "../../contexts/fin-record-context";
-import { useTable } from "react-table";
-
-const EditableCell = ({ value: initialValue, row, column, updateRecord, editable }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [value, setValue] = useState(initialValue);
-
-    const onChange = (e) => setValue(e.target.value);
-
-    const onBlur = () => {
-        setIsEditing(false);
-        console.log("EditableCell onBlur triggered for:", row.original);
-        if (value !== initialValue) {
-            updateRecord(row.original._id, column.id, value);
-        }
-        
-    };
-
-    return (
-        <div onClick={() => editable && setIsEditing(true)} style={{cursor: editable ? "pointer" : "default"}}>
-            {isEditing ? (
-                <input
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    autoFocus
-                    style={{ width: "100%" }}
-                />
-            ) : typeof value === "string" ? (
-                value
-            ) : (
-                value.toString()
-            )}
-        </div>
-    );
-};
 
 export const FinancialRecordList = () => {
-    const { records, updateRecord, deleteRecord } = useFinancialRecords();
+    const { records, deleteRecord } = useFinancialRecords();
 
-    const handleUpdateRecord = async (id, columnId, value) => {
-        console.log(`Updated row ${id}, column ${columnId} with value:`, value);
-        const updatedField = { [columnId]: value};
-        await updateRecord(id, updatedField); 
-       
-    };
     const handleDeleteRecord = (id) => {
         if (window.confirm("Are you sure you want to delete this record?")) {
             deleteRecord(id);
         }
     };
 
-    
+    const generateRandomColor = () => {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
 
-    const columns = useMemo(
-        () => [
-            {
-                Header: "Description",
-                accessor: "description",
-                Cell: (props) => (
-                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
-                ),
-            },
-            {
-                Header: "Amount",
-                accessor: "amount",
-                Cell: (props) => (
-                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
-                ),
-            },
-            {
-                Header: "Category",
-                accessor: "category",
-                Cell: (props) => (
-                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
-                ),
-            },
-            {
-                Header: "Payment",
-                accessor: "payment",
-                Cell: (props) => (
-                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={true} />
-                ),
-            },
-            {
-                Header: "Date",
-                accessor: "date",
-                Cell: (props) => (
-                    <EditableCell {...props} updateRecord={handleUpdateRecord} editable={false} />
-                ),
-            },
-            {
-                Header: "Delete",
-                id: "delete",
-                Cell: ({ row }) => (
+    return (
+        <div className="list-container">
+            {records.map((record, index) => (
+                <div
+                    className="expense-card"
+                    key={record._id || index}
+                    style={{ borderColor: generateRandomColor() }}
+                >
+                    <div className="expense-detail">
+                        <strong>Description:</strong> {record.description}
+                    </div>
+                    <div className="expense-detail">
+                        <strong>Amount:</strong> ${record.amount.toFixed(2)}
+                    </div>
+                    <div className="expense-detail">
+                        <strong>Category:</strong> {record.category}
+                    </div>
+                    <div className="expense-detail">
+                        <strong>Payment:</strong> {record.payment}
+                    </div>
+                    <div className="expense-detail">
+                        <strong>Date:</strong> {new Date(record.date).toLocaleDateString()}
+                    </div>
                     <button
-                        onClick={() => handleDeleteRecord(row.original._id ?? "")}
-                        className="button"
+                        className="delete-button"
+                        onClick={() => handleDeleteRecord(record._id)}
                     >
                         Delete
                     </button>
-                ),
-            },
-        ],
-        [records]
-    );
-
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-        columns,
-        data: records,
-    });
-
-    return (
-        <div className="table-container">
-            <table {...getTableProps()} className="table">
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                            {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps()} key={column.id}>
-                                    {column.render("Header")}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()} key={row.id}>
-                                {row.cells.map((cell) => (
-                                    <td {...cell.getCellProps()} key={cell.column.id}>
-                                        {cell.render("Cell")}
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                </div>
+            ))}
         </div>
     );
 };

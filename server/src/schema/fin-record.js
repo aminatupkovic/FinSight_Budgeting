@@ -8,6 +8,7 @@ const finRecordSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     category: { type: String, required: true },
     payment: { type: String, required: true },
+    type: { type: String, required: true, enum: ['income', 'expense'] },
 });
 
 // Create a model from the schema

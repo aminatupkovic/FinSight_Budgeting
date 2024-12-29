@@ -38,6 +38,8 @@ export const FinRecordProvider = ({ children }) => {
 
             if (response.ok) {
                 const newRecord = await response.json();
+                console.log("New record added to state:", newRecord);
+
                 setRecords((prev) => [...prev, newRecord]);
             }
             else {

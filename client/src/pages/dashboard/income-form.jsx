@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useContext } from "react";
 import { FinRecordsContext } from "../../contexts/fin-record-context";
 
-export const FinancialRecordForm = () => {
+export const IncomeForm = () => {
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
     const [category, setCategory] = useState("");
@@ -21,7 +21,7 @@ export const FinancialRecordForm = () => {
             amount: parseFloat(amount),
             category,
             payment,
-            type: "expense",
+            type: "income", // Differentiates incomes from expenses
         };
 
         addRecord(newRecord);
@@ -64,10 +64,9 @@ export const FinancialRecordForm = () => {
                         onChange={(e) => setCategory(e.target.value)}
                     >
                         <option value="">Select a Category</option>
-                        <option value="Food">Food</option>
-                        <option value="Rent">Rent</option>
-                        <option value="Utilities">Utilities</option>
-                        <option value="Entertainment">Entertainment</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Investment">Investment</option>
+                        <option value="Freelance">Freelance</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -80,14 +79,16 @@ export const FinancialRecordForm = () => {
                         onChange={(e) => setPayment(e.target.value)}
                     >
                         <option value="">Select a payment method</option>
-                        <option value="Card">Card</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Check">Check</option>
                         <option value="Cash">Cash</option>
                     </select>
                 </div>
                 <button type="submit" className="button">
-                    Add Expense
+                    Add Income
                 </button>
             </form>
         </div>
     );
 };
+

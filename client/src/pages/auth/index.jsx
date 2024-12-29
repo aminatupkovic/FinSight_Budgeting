@@ -8,10 +8,7 @@ export const Auth = () => {
                 <SignInButton mode='modal' />
             </SignedOut>
 
-            <SignedIn>
-             
-                <UserButton />
-            </SignedIn>
+            
         </div>
     );
 }
