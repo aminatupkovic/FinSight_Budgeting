@@ -2,14 +2,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px auto;
-    max-width: 1200px;
+    margin: 30px auto;
+    width: 100%;
   }
   .form-section {
     display: flex;
-    flex-direction: column;
-    flex: 1;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
     gap: 20px;
+    
+  }
+  .form-section > * {
+    flex: 1; /* Makes both forms take up equal width */
+    min-width: 200px; /* Prevents forms from becoming too narrow */
+    max-width: 600px;
   }
 
 h1,h2 {
@@ -88,38 +95,85 @@ label {
     background-color: #e8f4f8;
 }
 /* Form Container Styles */
-.form-container {
+.form-container-exp {
     padding: 20px;
-    background: linear-gradient(135deg, #9be7c4, #d4f1f4);
+    background: linear-gradient(135deg, #38b6ff, #cdf3f7);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  .form-container-inc {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5c116, #f7eed0);
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 .info-panel {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: row;
+    gap: 110px;
+    margin-top: 80px;
   }
 .chart-container {
     text-align: center;
 }
-
+      
+.stat-and-analysis {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 80px;
+    gap: 80px;
+}
+  
 .stats-container {
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.5;
+    padding: 26px;
+    border-radius: 15px; /* More rounded corners */
+    background: linear-gradient(145deg, #caecf4, #4dcdfc); /* Gradient background */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Larger shadow for more depth */
+    width: 300px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effects */
+    font-family: 'Poppins', sans-serif; /* Fun, modern font */
 }
 
-.stats-container h4 {
-    margin: 10px 0 5px;
-    color: #2c3e50;
-    font-size: 16px;
+.stats-container:hover {
+    transform: scale(1.05); /* Slight scale up effect on hover */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.stats-container h3 {
+    font-size: 2rem; /* Larger heading */
+    color: #333;
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-transform: uppercase; /* Make it look bolder and more fun */
+    letter-spacing: 1px;
 }
 
 .stats-container p {
-    font-weight: bold;
-    color: #2c3e50;
-  }
+    margin: 8px 0;
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.stats-container strong {
+    font-weight: 700;
+    color: #000000; /* Blue color for emphasis */
+}
+
+.stats-container .info {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.stats-container .footer {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+}
+
 
 /* Smooth Rainbow Animation */
 @keyframes rainbow-bg {

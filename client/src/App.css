@@ -1,42 +1,157 @@
 
 
 body,html {
+  width: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f7fa;
   color: #333;
 }
+
 .app-container {
-  width: 94.4vw;
-  min-height: 100vh;
   
+  width: 97.6%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
+
 .navbar {
-  background-color: #3498db;
+  background-color: #000000;
   padding: 1px 20px;
-  padding-right: 50px;
   display: flex;
-  justify-content: right;
+  justify-content: space-between; /* Ensures space between left and right sections */
   align-items: center;
   color: white;
   width: 100%;
-  height: 60px;
+  height: 70px;
 }
-.navbar a {
-  color: white;
+
+.img-and-dash {
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 200px; /* Adjust size as needed */
+  margin-right: 10px;
+}
+
+.dashboard-link {
+  color: rgb(255, 196, 86);
   text-decoration: none;
-  margin-right: 20px;
   font-weight: bold;
+  font-size: 18px;
   transition: color 0.3s;
+  margin-bottom: 5px;
 }
-.navbar a:hover {
+
+.dashboard-link:hover {
   color: #e0e0e0;
 }
+
+.user-section {
+  display: flex;
+  align-items: center;
+}
+
 .clerk-user-button {
   background-color: transparent;
   border: none;
   color: white;
   cursor: pointer;
 }
+
+.goal-container, .savings-container {
+  background: #ffffff; /* White background for a clean look */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 20px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 400px; /* Limit the width for a compact layout */
+}
+
+.goal-container h3, .savings-container h3 {
+  color: #333333; /* Dark text for contrast */
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #f5f5f5; /* Subtle underline */
+  padding-bottom: 5px;
+}
+
+.goal-container label, .savings-container label {
+  font-size: 0.9em;
+  color: #555555; /* Subtle text color */
+  display: block;
+  margin-bottom: 5px;
+}
+
+.goal-container input, .savings-container input {
+  width: calc(100% - 20px); /* Responsive to container size */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #dddddd; /* Light border */
+  border-radius: 4px;
+  font-size: 0.95em;
+  background-color: white;
+  color: black;
+}
+
+.goal-container button, .savings-container button {
+  background: #e4ae0e; /* Green button for action */
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.goal-container button:hover, .savings-container button:hover {
+  background: #e8c94c; /* Slightly darker green on hover */
+}
+
+.savings-container .progress-bar {
+  background: #f5f5f5; /* Light background */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden;
+  height: 25px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.savings-container .progress-bar div {
+  background: linear-gradient(90deg, #4c96af, #81c1c7); /* Gradient for modern feel */
+  height: 100%;
+  transition: width 0.5s ease; /* Smooth animation */
+}
+
+.savings-container p, .goal-container p {
+  font-size: 1em;
+  color: #666666; /* Neutral text color */
+}
+
+.savings-container p span {
+  font-weight: bold;
+}
+
+.congratulations {
+  text-align: center;
+  color: #ff9800; /* Bright orange for celebration */
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.no-goals {
+  color: #999999;
+  font-style: italic;
+  text-align: center;
+  margin-top: 10px;
+}
+
+

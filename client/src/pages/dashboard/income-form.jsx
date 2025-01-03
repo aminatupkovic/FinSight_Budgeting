@@ -33,7 +33,7 @@ export const IncomeForm = () => {
     };
 
     return (
-        <div className="form-container">
+        <div className="form-container-inc">
             <form onSubmit={handleSubmit}>
                 <div className="form-field">
                     <label>Description</label>
