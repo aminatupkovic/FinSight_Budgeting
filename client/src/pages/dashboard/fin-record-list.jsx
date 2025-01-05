@@ -10,22 +10,15 @@ export const FinancialRecordList = () => {
         }
     };
 
-    const generateRandomColor = () => {
-        const letters = "0123456789ABCDEF";
-        let color = "#";
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
-
     return (
         <div className="list-container">
             {records.map((record, index) => (
                 <div
                     className="expense-card"
                     key={record._id || index}
-                    style={{ borderColor: generateRandomColor() }}
+                    style={{
+                        borderColor: record.type === "income" ? "#f5c116" : "#38b6ff",
+                    }}
                 >
                     <div className="expense-detail">
                         <strong>Description:</strong> {record.description}
@@ -53,3 +46,4 @@ export const FinancialRecordList = () => {
         </div>
     );
 };
+

@@ -4,6 +4,7 @@
     align-items: center;
     margin: 30px auto;
     width: 100%;
+    margin-top: 10%;
   }
   .form-section {
     display: flex;
@@ -233,42 +234,37 @@ form {
 /* Container for the list */
 /* Container for the list */
 .list-container {
-    width: 100%;
-    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-  }
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
 
 /* Individual expense card */
 .expense-card {
-    padding: 15px;
-    border: 2px solid transparent;
-    border-radius: 15px;
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 20px;
+    border: 5px solid transparent; /* Placeholder for dynamic color */
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    flex: 1 1 calc(30% - 20px); /* Cards take up ~30% of the row with space for gaps */
-    max-width: 300px; /* Prevent cards from being too large */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-bottom: 20px;
+    width: 300px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Hover effect for cards */
 .expense-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Expense details */
 .expense-detail {
     font-size: 14px;
     color: #333;
+    margin-bottom: 10px;
 }
 
-/* Delete button */
 .delete-button {
     background-color: #e74c3c;
     color: white;
@@ -276,8 +272,7 @@ form {
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    align-self: flex-start;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .delete-button:hover {
@@ -318,4 +313,96 @@ form {
     width: 100%;
     gap: 20px;
   }
+  .date-picker-container {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 10;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 5%;
+    margin-right: 5%;
+  }
+  
+  .date-picker-container label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .date-picker-container input {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  /* General DatePicker Styling */
+  .react-datepicker {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .react-datepicker__header {
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .react-datepicker__current-month,
+  .react-datepicker__day-name {
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .react-datepicker__day {
+    color: #555;
+    background-color: white;
+  }
+  
+  .react-datepicker__day:hover {
+    background-color: #f0f8ff; /* Light blue hover effect */
+    border-radius: 50%;
+  }
+  
+  .react-datepicker__day--selected {
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50%;
+  }
+  
+  .react-datepicker__month-container {
+    background-color: white;
+  }
+  
+  /* Adjusting year/month dropdowns */
+  .react-datepicker__month-read-view,
+  .react-datepicker__year-read-view {
+    background-color: white;
+    color: #333;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .react-datepicker__month-dropdown,
+  .react-datepicker__year-dropdown {
+    background-color: white;
+    border: 1px solid #ddd;
+  }
+  
+  .react-datepicker__navigation {
+    top: 10px;
+  }
+  
+  
+  
 

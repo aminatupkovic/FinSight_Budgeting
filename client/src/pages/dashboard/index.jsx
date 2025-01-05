@@ -1,30 +1,52 @@
-import { useUser } from "@clerk/clerk-react";
 import { FinancialRecordForm } from "./fin-record-form";
-import { IncomeForm } from "./income-form"; // New component
+import { IncomeForm } from "./income-form";
 import { FinancialRecordList } from "./fin-record-list";
 import "./fin-record.css";
 import "../../App.css";
 import { useState, useMemo, useEffect } from "react";
 import { useFinancialRecords } from "../../contexts/fin-record-context";
 import { PieChart, Pie, Cell, Legend } from "recharts";
+import DatePicker from "react-datepicker";
 
 export const Dashboard = () => {
   const { records } = useFinancialRecords();
 
-  const currentMonth = new Date().getMonth();
+  // Define selectedDate state and initialize with the current date
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Default to current date
 
-  // Separate incomes and expenses
-  const incomes = records.filter(
-    (record) => record.type === "income" && new Date(record.date).getMonth() === currentMonth
-  );
-  const expenses = records.filter(
-    (record) => record.type !== "income" && new Date(record.date).getMonth() === currentMonth
-  );
+  const selectedMonth = selectedDate.getMonth();
+  const selectedYear = selectedDate.getFullYear();
 
-  // Calculate totals
+  const currentMonthRecords = useMemo(() => {
+    return records.filter(
+      (record) =>
+        new Date(record.date).getMonth() === selectedMonth &&
+        new Date(record.date).getFullYear() === selectedYear
+    );
+  }, [records, selectedMonth, selectedYear]);
+
+  const previousMonthDate = new Date(selectedYear, selectedMonth - 1, 1);
+  const previousMonthRecords = useMemo(() => {
+    return records.filter(
+      (record) =>
+        new Date(record.date).getMonth() === previousMonthDate.getMonth() &&
+        new Date(record.date).getFullYear() === previousMonthDate.getFullYear()
+    );
+  }, [records, previousMonthDate]);
+
+  const totalPreviousNet = useMemo(() => {
+    const incomes = previousMonthRecords.filter((r) => r.type === "income").reduce((sum, r) => sum + r.amount, 0);
+    const expenses = previousMonthRecords.filter((r) => r.type !== "income").reduce((sum, r) => sum + r.amount, 0);
+    return incomes - expenses;
+  }, [previousMonthRecords]);
+
+  const incomes = currentMonthRecords.filter((record) => record.type === "income");
+  const expenses = currentMonthRecords.filter((record) => record.type !== "income");
   const totalIncomes = incomes.reduce((sum, record) => sum + record.amount, 0);
   const totalExpenses = expenses.reduce((sum, record) => sum + record.amount, 0);
-  const totalNet = totalIncomes - totalExpenses;
+  const totalNet = totalIncomes - totalExpenses + totalPreviousNet;
+
+ 
 
   // Calculate spending by category
   const categoryData = useMemo(() => {
@@ -106,8 +128,19 @@ export const Dashboard = () => {
   const savingsPercentage =
     goalAmount > 0 ? Math.min((currentSavings / parseFloat(goalAmount)) * 100, 100) : 0;
 
+    
+
   return (
     <div className="dashboard-container">
+      <div className="date-picker-container">
+        <label>Select Month:</label>
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          dateFormat="MMMM yyyy"
+          showMonthYearPicker
+        />
+      </div>
       <div className="form-section">
         <div>
           <h2>Enter your Income:</h2>
@@ -198,29 +231,33 @@ export const Dashboard = () => {
           )}
         </div>
       </div>
-    
       <div className="stat-and-analysis">
-      <div className="stats-container">
-        <h4>Monthly Totals</h4>
-        <p>
+        <div className="stats-container">
+          <h4>Monthly Totals</h4>
+          <p>
             <strong>Incomes:</strong> ${totalIncomes.toFixed(2)}
-        </p>
-        <p>
+          </p>
+          <p>
             <strong>Expenses: </strong>${totalExpenses.toFixed(2)}
-        </p>
-        <p>
+          </p>
+          <p>
             <strong>Net Total: </strong>${totalNet.toFixed(2)}
-        </p>
-      </div>
+          </p>
+        </div>
 
-      <div>
-        <h1>To be continued...</h1>
+        <div>
+          <h1>To be continued...</h1>
+        </div>
       </div>
-      </div>
-      
+      <h2 style={{ marginTop: "80px" }}>Recent Transactions:</h2>
       <div className="list-container">
-        <FinancialRecordList records={expenses} />
+        {currentMonthRecords.length > 0 ? (
+          <FinancialRecordList records={currentMonthRecords} />
+        ) : (
+          <p>No transactions for this month.</p>
+        )}
       </div>
     </div>
   );
 };
+
