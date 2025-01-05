@@ -3,19 +3,67 @@ import { IncomeForm } from "./income-form";
 import { FinancialRecordList } from "./fin-record-list";
 import "./fin-record.css";
 import "../../App.css";
+import { useUser } from "@clerk/clerk-react";
 import { useState, useMemo, useEffect } from "react";
 import { useFinancialRecords } from "../../contexts/fin-record-context";
 import { PieChart, Pie, Cell, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 import DatePicker from "react-datepicker";
 
 export const Dashboard = () => {
   const { records } = useFinancialRecords();
-
+  const { user } = useUser(); // Access Clerk user
+  const userName = user?.firstName || "User";
   // Define selectedDate state and initialize with the current date
   const [selectedDate, setSelectedDate] = useState(new Date()); // Default to current date
 
   const selectedMonth = selectedDate.getMonth();
   const selectedYear = selectedDate.getFullYear();
+
+  const getMonthlyRecords = (month, year) => {
+    return records.filter(
+      (record) =>
+        new Date(record.date).getMonth() === month &&
+        new Date(record.date).getFullYear() === year
+    );
+  };
+
+  // Calculate data for the last 12 months
+  const last12MonthsData = useMemo(() => {
+    const data = [];
+    let currentDate = new Date(selectedYear, selectedMonth, 1);
+
+    for (let i = 0; i < 12; i++) {
+      const month = currentDate.getMonth();
+      const year = currentDate.getFullYear();
+      const monthlyRecords = getMonthlyRecords(month, year);
+
+      const totalIncome = monthlyRecords
+        .filter((r) => r.type === "income")
+        .reduce((sum, r) => sum + r.amount, 0);
+      const totalExpense = monthlyRecords
+        .filter((r) => r.type !== "income")
+        .reduce((sum, r) => sum + r.amount, 0);
+
+      data.unshift({
+        month: `${currentDate.toLocaleString("default", { month: "short" })} ${year}`,
+        income: totalIncome,
+        expense: totalExpense,
+        savings: totalIncome - totalExpense,
+      });
+
+      // Move to the previous month
+      currentDate.setMonth(currentDate.getMonth() - 1);
+    }
+
+    return data;
+  }, [records, selectedMonth, selectedYear]);
+
+  // Calculate average savings based on last 12 months
+  const averageSavings = useMemo(() => {
+    const totalSavings = last12MonthsData.reduce((sum, record) => sum + record.savings, 0);
+    return totalSavings / 12;
+  }, [last12MonthsData]);
 
   const currentMonthRecords = useMemo(() => {
     return records.filter(
@@ -132,6 +180,20 @@ export const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
+        <h2 className="welcome">Welcome to your Dashboard, {userName}</h2>
+        <div className="date-and-total">
+        <div className="stats-container">
+          <h4>Monthly Totals</h4>
+          <p>
+            <strong>Incomes:</strong> ${totalIncomes.toFixed(2)}
+          </p>
+          <p>
+            <strong>Expenses: </strong>${totalExpenses.toFixed(2)}
+          </p>
+          <p>
+            <strong>Net Total: </strong>${totalNet.toFixed(2)}
+          </p>
+        </div>
       <div className="date-picker-container">
         <label>Select Month:</label>
         <DatePicker
@@ -141,6 +203,8 @@ export const Dashboard = () => {
           showMonthYearPicker
         />
       </div>
+        </div>
+        
       <div className="form-section">
         <div>
           <h2>Enter your Income:</h2>
@@ -154,7 +218,7 @@ export const Dashboard = () => {
       <div className="info-panel">
         <div className="chart-container">
           <h3>Spending by Category</h3>
-          <PieChart width={300} height={300}>
+          <PieChart width={350} height={350}>
             <Pie
               data={categoryData}
               dataKey="amount"
@@ -232,24 +296,41 @@ export const Dashboard = () => {
         </div>
       </div>
       <div className="stat-and-analysis">
-        <div className="stats-container">
-          <h4>Monthly Totals</h4>
-          <p>
-            <strong>Incomes:</strong> ${totalIncomes.toFixed(2)}
-          </p>
-          <p>
-            <strong>Expenses: </strong>${totalExpenses.toFixed(2)}
-          </p>
-          <p>
-            <strong>Net Total: </strong>${totalNet.toFixed(2)}
-          </p>
-        </div>
+        
 
-        <div>
-          <h1>To be continued...</h1>
+        <div className="long-term-impact">
+          
+          <BarChart
+            width={900}
+            height={300}
+            data={last12MonthsData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="income" stackId="a" fill="#82ca9d" />
+            <Bar dataKey="expense" stackId="a" fill="#ff6f61" />
+          </BarChart>
+          
+          <p>
+            Based on your spending habits over the past 12 months, you could save approximately
+            <strong> ${averageSavings.toFixed(2)} per month</strong>.
+          </p>
+          <p>
+          In a year, you will be able to save: 
+          <strong> ${(averageSavings * 12).toFixed(2)}</strong>.
+          </p>
         </div>
       </div>
-      <h2 style={{ marginTop: "80px" }}>Recent Transactions:</h2>
+      <h2 style={{ marginTop: "80px", marginLeft: "6%" }}>Recent Transactions:</h2>
       <div className="list-container">
         {currentMonthRecords.length > 0 ? (
           <FinancialRecordList records={currentMonthRecords} />

@@ -1,10 +1,13 @@
 .dashboard-container {
-    display: flex;
+    
     flex-direction: column;
-    align-items: center;
+    
     margin: 30px auto;
     width: 100%;
-    margin-top: 10%;
+  }
+  .welcome {
+    align-items: start;
+    margin-left: 10%;
   }
   .form-section {
     display: flex;
@@ -12,7 +15,6 @@
     width: 100%;
     justify-content: space-evenly;
     gap: 20px;
-    
   }
   .form-section > * {
     flex: 1; /* Makes both forms take up equal width */
@@ -21,8 +23,7 @@
   }
 
 h1,h2 {
-    color: #2c3e50;
-    text-align: center;
+    color: #000000;
 }
 .form-container, .list-container {
     margin-bottom: 20px;
@@ -112,11 +113,12 @@ label {
     flex: 1;
     display: flex;
     flex-direction: row;
-    gap: 110px;
+    gap: 50px;
     margin-top: 80px;
   }
 .chart-container {
     text-align: center;
+    margin-left: 10%;
 }
       
 .stat-and-analysis {
@@ -128,13 +130,14 @@ label {
 }
   
 .stats-container {
-    padding: 26px;
+    padding: 15px;
     border-radius: 15px; /* More rounded corners */
-    background: linear-gradient(145deg, #caecf4, #4dcdfc); /* Gradient background */
+    border: 1px solid black;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Larger shadow for more depth */
     width: 300px;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effects */
     font-family: 'Poppins', sans-serif; /* Fun, modern font */
+    margin-left: 10%;
 }
 
 .stats-container:hover {
@@ -142,9 +145,9 @@ label {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
 }
 
-.stats-container h3 {
-    font-size: 2rem; /* Larger heading */
-    color: #333;
+.stats-container h4 {
+    font-size: 1.3rem; /* Larger heading */
+    color: #000000;
     margin-bottom: 12px;
     font-weight: 600;
     text-transform: uppercase; /* Make it look bolder and more fun */
@@ -152,9 +155,9 @@ label {
 }
 
 .stats-container p {
-    margin: 8px 0;
+    margin: 5px 0;
     font-size: 1.1rem;
-    color: #333;
+    color: #000000;
     line-height: 1.5;
 }
 
@@ -175,13 +178,6 @@ label {
     text-align: center;
 }
 
-
-/* Smooth Rainbow Animation */
-@keyframes rainbow-bg {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
 
 /* Input and Button Updates */
 .form-field {
@@ -212,13 +208,15 @@ label {
 }
 
 .button {
-    background-color: #3498db;
+    background-color: #000000;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 5px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 120px;
+    align-self: center;
 }
 
 .button:hover {
@@ -244,8 +242,8 @@ form {
 /* Individual expense card */
 .expense-card {
     padding: 20px;
-    border: 5px solid transparent; /* Placeholder for dynamic color */
-    border-radius: 12px;
+    border: 2px solid transparent; /* Placeholder for dynamic color */
+    border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 300px;
@@ -266,7 +264,7 @@ form {
 }
 
 .delete-button {
-    background-color: #e74c3c;
+    background-color: #000000;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -287,12 +285,11 @@ form {
   .statistics-container {
     flex: 1;
     background: white;
-    border: 1px solid #ddd;
+    border: 1px solid black;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
   .expense-item {
     display: inline-block;
     width: calc(33.33% - 20px);
@@ -316,7 +313,7 @@ form {
   .date-picker-container {
     position: absolute;
     top: 10px;
-    right: 20px;
+    right: 95px;
     z-index: 10;
     background: #fff;
     border: 1px solid #ddd;
@@ -402,6 +399,18 @@ form {
   .react-datepicker__navigation {
     top: 10px;
   }
+  .long-term-impact {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .long-term-impact h4 {
+    margin-bottom: 15px;
+  }
+  
+  
   
   
   
