@@ -8,6 +8,20 @@ body,html {
   background-color: #f4f7fa;
   color: #333;
 }
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensures the gradient covers the full viewport height */
+  background: linear-gradient(
+    to bottom right, 
+    rgb(138, 216, 243), /* Faint blue */
+    rgba(255, 255, 255, 1), /* White */
+    rgb(248, 221, 171) /* Faint yellow */
+  );
+  background-attachment: fixed; /* Keeps the background stationary during scroll */
+  font-family: Arial, sans-serif; /* Optional: Ensures consistent font rendering */
+}
+
 
 .app-container {
   

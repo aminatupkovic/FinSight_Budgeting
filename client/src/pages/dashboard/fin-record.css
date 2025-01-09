@@ -4,6 +4,7 @@
     margin: 30px auto;
     width: 100%;
   }
+  
   .welcome {
     align-items: start;
     margin-left: 10%;
@@ -403,6 +404,7 @@ form {
     background: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
+    border: 1px solid black;
   }
   
   .long-term-impact h4 {
