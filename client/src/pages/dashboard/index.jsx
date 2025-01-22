@@ -27,6 +27,17 @@ export const Dashboard = () => {
         new Date(record.date).getFullYear() === year
     );
   };
+  const [goalData, setGoalData] = useState(() => {
+    const savedGoals = JSON.parse(localStorage.getItem("userGoals")) || {};
+    return savedGoals[user.id] || {
+      goalAmount: "",
+      goalDuration: "",
+      goalMessage: "",
+      currentSavings: 0,
+    };
+  });
+
+  const { goalAmount, goalDuration, goalMessage, currentSavings } = goalData;
 
   // Calculate data for the last 12 months
   const last12MonthsData = useMemo(() => {
@@ -109,42 +120,48 @@ export const Dashboard = () => {
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff6f61", "#61dafb", "#a29bfe", "#fd79a8"];
 
   // Goal-Setting State
-  const [goalAmount, setGoalAmount] = useState(localStorage.getItem("goalAmount") || "");
-  const [goalDuration, setGoalDuration] = useState(localStorage.getItem("goalDuration") || "");
-  const [goalMessage, setGoalMessage] = useState(localStorage.getItem("goalMessage") || "");
-  const [currentSavings, setCurrentSavings] = useState(
-    parseFloat(localStorage.getItem("currentSavings")) || 0
-  );
+
   const [savingInput, setSavingInput] = useState("");
 
   // Save goal-related states to localStorage
   useEffect(() => {
-    localStorage.setItem("goalAmount", goalAmount);
-    localStorage.setItem("goalDuration", goalDuration);
-    localStorage.setItem("goalMessage", goalMessage);
-    localStorage.setItem("currentSavings", currentSavings.toString());
-  }, [goalAmount, goalDuration, goalMessage, currentSavings]);
+    const savedGoals = JSON.parse(localStorage.getItem("userGoals")) || {};
+    savedGoals[user.id] = goalData;
+    localStorage.setItem("userGoals", JSON.stringify(savedGoals));
+  }, [goalData, user.id]);
 
   const calculateSavingsGoal = () => {
     if (!goalAmount || !goalDuration) {
-      setGoalMessage("Please enter a valid goal amount and duration.");
+      setGoalData((prev) => ({
+        ...prev,
+        goalMessage: "Please enter a valid goal amount and duration.",
+      }));
       return;
     }
-
     const monthlySavingsRequired = parseFloat(goalAmount) / parseInt(goalDuration);
-    if (monthlySavingsRequired > totalNet) {
-      setGoalMessage(
-        `You need to save $${monthlySavingsRequired.toFixed(
-          2
-        )} per month. Adjust your expenses or increase income.`
-      );
-    } else {
-      setGoalMessage(
-        `Great! You can achieve your goal by saving $${monthlySavingsRequired.toFixed(
-          2
-        )} per month.`
-      );
-    }
+    setGoalData((prev) => ({
+      ...prev,
+      goalMessage:
+        monthlySavingsRequired > totalNet
+          ? `You need to save $${monthlySavingsRequired.toFixed(
+              2
+            )} per month. Adjust your expenses or increase income.`
+          : `Great! You can achieve your goal by saving $${monthlySavingsRequired.toFixed(
+              2
+            )} per month.`,
+    }));
+  };
+  const handleGoalInputChange = (e) => {
+    const { name, value } = e.target;
+    setGoalData((prev) => ({
+      ...prev,
+      [name]: value === "" ? "" : parseFloat(value), // Parse value as a number, or reset to an empty string
+    }));
+  };
+  
+  const handleSavingInputChange = (e) => {
+    const value = e.target.value;
+    setSavingInput(value === "" ? "" : parseFloat(value)); // Parse value as a number, or reset to an empty string
   };
 
   const addToSavings = () => {
@@ -153,24 +170,23 @@ export const Dashboard = () => {
       alert("Please enter a valid amount.");
       return;
     }
-    if (currentSavings + amountToAdd >= parseFloat(goalAmount)) {
-      setCurrentSavings(parseFloat(goalAmount));
-    } else {
-      setCurrentSavings((prev) => prev + amountToAdd);
-    }
+    setGoalData((prev) => ({
+      ...prev,
+      currentSavings:
+        prev.currentSavings + amountToAdd >= parseFloat(goalAmount)
+          ? parseFloat(goalAmount)
+          : prev.currentSavings + amountToAdd,
+    }));
     setSavingInput("");
   };
 
   const handleResetGoal = () => {
-    setGoalAmount("");
-    setGoalDuration("");
-    setGoalMessage("");
-    setCurrentSavings(0);
-    setSavingInput("");
-    localStorage.removeItem("goalAmount");
-    localStorage.removeItem("goalDuration");
-    localStorage.removeItem("goalMessage");
-    localStorage.removeItem("currentSavings");
+    setGoalData({
+      goalAmount: "",
+      goalDuration: "",
+      goalMessage: "",
+      currentSavings: 0,
+    });
   };
 
   const savingsPercentage =
@@ -241,8 +257,9 @@ export const Dashboard = () => {
             <label>Goal Amount ($):</label>
             <input
               type="number"
+              name="goalAmount"
               value={goalAmount}
-              onChange={(e) => setGoalAmount(e.target.value)}
+              onChange= {handleGoalInputChange}
               placeholder="Enter amount"
             />
           </div>
@@ -250,8 +267,9 @@ export const Dashboard = () => {
             <label>Duration (months):</label>
             <input
               type="number"
+              name="goalDuration"
               value={goalDuration}
-              onChange={(e) => setGoalDuration(e.target.value)}
+              onChange={handleGoalInputChange}
               placeholder="Enter months"
             />
           </div>
@@ -259,41 +277,42 @@ export const Dashboard = () => {
           {goalMessage && <p>{goalMessage}</p>}
         </div>
         <div className="savings-container">
-          <h3>Savings Progress</h3>
-          {goalAmount === "" ? (
-            <p>No current saving goals.</p>
-          ) : currentSavings >= parseFloat(goalAmount) ? (
-            <>
-              <p>🎉 Congratulations! You’ve reached your goal! 🎉</p>
-              <button onClick={handleResetGoal}>Set a New Goal</button>
-            </>
-          ) : (
-            <>
-              <div className="progress-bar" style={{ backgroundColor: "#f0f0f0", height: "20px" }}>
-                <div
-                  style={{
-                    width: `${savingsPercentage}%`,
-                    backgroundColor: "#4caf50",
-                    height: "100%",
-                  }}
-                />
-              </div>
-              <p>
-                ${currentSavings.toFixed(2)} saved out of ${goalAmount || 0}
-              </p>
-              <div>
-                <label>Add to Savings ($):</label>
-                <input
-                  type="number"
-                  value={savingInput}
-                  onChange={(e) => setSavingInput(e.target.value)}
-                  placeholder="Enter amount"
-                />
-                <button onClick={addToSavings}>Add</button>
-              </div>
-            </>
-          )}
-        </div>
+  <h3>Savings Progress</h3>
+  {goalAmount === "" ? (
+    <p>No current saving goals.</p>
+  ) : currentSavings >= parseFloat(goalAmount) ? (
+    <>
+      <p>🎉 Congratulations! You’ve reached your goal! 🎉</p>
+      <button onClick={handleResetGoal}>Set a New Goal</button>
+    </>
+  ) : (
+    <>
+      <div className="progress-bar" style={{ backgroundColor: "#f0f0f0", height: "20px" }}>
+        <div
+          style={{
+            width: `${(currentSavings / parseFloat(goalAmount)) * 100}%`,
+            backgroundColor: "#4caf50",
+            height: "100%",
+          }}
+        />
+      </div>
+      <p>
+        ${currentSavings.toFixed(2)} saved out of ${goalAmount || 0}
+      </p>
+      <div>
+        <label>Add to Savings ($):</label>
+        <input
+          type="number"
+          value={savingInput}
+          onChange={handleSavingInputChange}
+          placeholder="Enter amount"
+        />
+        <button onClick={addToSavings}>Add</button>
+      </div>
+    </>
+  )}
+</div>
+
       </div>
       <div className="stat-and-analysis">
         
