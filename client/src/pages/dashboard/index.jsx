@@ -9,6 +9,8 @@ import { useFinancialRecords } from "../../contexts/fin-record-context";
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 import DatePicker from "react-datepicker";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css"; 
 
 export const Dashboard = () => {
   const { records } = useFinancialRecords();
@@ -192,6 +194,10 @@ export const Dashboard = () => {
   const savingsPercentage =
     goalAmount > 0 ? Math.min((currentSavings / parseFloat(goalAmount)) * 100, 100) : 0;
 
+  
+  const handleDateChange = (date) => {
+  setSelectedDate(date);
+};
     
 
   return (
@@ -210,15 +216,19 @@ export const Dashboard = () => {
             <strong>Net Total: </strong>${totalNet.toFixed(2)}
           </p>
         </div>
-      <div className="date-picker-container">
-        <label>Select Month:</label>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-          dateFormat="MMMM yyyy"
-          showMonthYearPicker
-        />
-      </div>
+        <div className="calendar-container">
+    <h3>Select a Date:</h3>
+    <Calendar
+      onChange={handleDateChange}
+      value={selectedDate}
+      showNavigation={true}
+      tileClassName={({ date, view }) => {
+        // Example to highlight current date
+        const today = new Date();
+        return today.toDateString() === date.toDateString() ? "highlight-today" : null;
+      }}
+    />
+  </div>
         </div>
         
       <div className="form-section">
@@ -349,7 +359,8 @@ export const Dashboard = () => {
           </p>
         </div>
       </div>
-      <h2 style={{ marginTop: "80px", marginLeft: "6%" }}>Recent Transactions:</h2>
+      
+      
       <div className="list-container">
         {currentMonthRecords.length > 0 ? (
           <FinancialRecordList records={currentMonthRecords} />
@@ -360,4 +371,3 @@ export const Dashboard = () => {
     </div>
   );
 };
-

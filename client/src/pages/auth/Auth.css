@@ -50,7 +50,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #f5c116; /* Green button color */
-    color: white;
+    color: rgb(0, 0, 0);
     cursor: pointer;
     font-size: 16px;
   }
