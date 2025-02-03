@@ -36,8 +36,9 @@ export const FinancialRecordForm = () => {
         <div className="form-container-exp">
             <form onSubmit={handleSubmit}>
                 <div className="form-field">
-                    <label>Description</label>
+                    <label htmlFor="description">Description</label>
                     <input
+                        id="description"
                         type="text"
                         required
                         className="input"
@@ -46,8 +47,9 @@ export const FinancialRecordForm = () => {
                     />
                 </div>
                 <div className="form-field">
-                    <label>Amount:</label>
+                    <label testId="amount-input" htmlFor="amountt">Amount:</label>
                     <input
+                        id="amountt"
                         type="number"
                         required
                         className="input"
@@ -56,8 +58,9 @@ export const FinancialRecordForm = () => {
                     />
                 </div>
                 <div className="form-field">
-                    <label>Category:</label>
+                    <label htmlFor="category">Category:</label>
                     <select
+                        id="category"
                         required
                         className="input"
                         value={category}
@@ -72,8 +75,9 @@ export const FinancialRecordForm = () => {
                     </select>
                 </div>
                 <div className="form-field">
-                    <label>Payment Method:</label>
+                    <label htmlFor="payment">Payment Method:</label>
                     <select
+                        id="payment"
                         required
                         className="input"
                         value={payment}

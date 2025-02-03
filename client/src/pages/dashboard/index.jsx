@@ -206,13 +206,13 @@ export const Dashboard = () => {
         <div className="date-and-total">
         <div className="stats-container">
           <h4>Monthly Totals</h4>
-          <p>
+          <p data-testid="income-total">
             <strong>Incomes:</strong> ${totalIncomes.toFixed(2)}
           </p>
-          <p>
+          <p data-testid="expense-total">
             <strong>Expenses: </strong>${totalExpenses.toFixed(2)}
           </p>
-          <p>
+          <p data-testid="net-total">
             <strong>Net Total: </strong>${totalNet.toFixed(2)}
           </p>
         </div>
@@ -264,8 +264,9 @@ export const Dashboard = () => {
         <div className="goal-container">
           <h3>Set Your Financial Goal</h3>
           <div>
-            <label>Goal Amount ($):</label>
+            <label for="goalAmount">Goal Amount ($):</label>
             <input
+              id="goalAmount"
               type="number"
               name="goalAmount"
               value={goalAmount}
@@ -274,8 +275,9 @@ export const Dashboard = () => {
             />
           </div>
           <div>
-            <label>Duration (months):</label>
+            <label for="goalDuration">Duration (months):</label>
             <input
+              id="goalDuration"
               type="number"
               name="goalDuration"
               value={goalDuration}
@@ -363,7 +365,11 @@ export const Dashboard = () => {
       
       <div className="list-container">
         {currentMonthRecords.length > 0 ? (
-          <FinancialRecordList records={currentMonthRecords} />
+          <FinancialRecordList
+           
+           selectedMonth={selectedMonth}
+           
+           />
         ) : (
           <p>No transactions for this month.</p>
         )}

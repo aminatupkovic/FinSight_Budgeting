@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useFinancialRecords } from "../../contexts/fin-record-context";
 import "./fin-record.css";
 
-
-export const FinancialRecordList = () => {
+export const FinancialRecordList = ({selectedMonth}) => {
     const { records, deleteRecord, updateRecord } = useFinancialRecords();
     const [editingRecord, setEditingRecord] = useState(null);
     const [filterType, setFilterType] = useState("all");
@@ -15,10 +14,14 @@ export const FinancialRecordList = () => {
     };
 
     const handleEditClick = (record) => {
-        setEditingRecord(record);
+        setEditingRecord({ ...record }); // Create a copy of the record to avoid modifying the state directly
     };
 
     const handleSaveEdit = () => {
+        if (editingRecord.amount <= 0 || isNaN(editingRecord.amount)) {
+            alert("Please enter a valid amount.");
+            return;
+        }
         updateRecord(editingRecord._id, editingRecord);
         setEditingRecord(null);
     };
@@ -32,24 +35,38 @@ export const FinancialRecordList = () => {
     };
 
     const filteredRecords = records.filter((record) => {
+        const recordDate = new Date(record.date);
+        const recordMonth = recordDate.getMonth();
+
+        if (recordMonth !== selectedMonth) {
+            return false;
+        }
+
+        // Filter by type
         if (filterType === "all") return true;
         return filterType === "income" ? record.type === "income" : record.type !== "income";
+       
     });
 
     return (
         <div className="list-container">
             <div className="transactions-header">
-            <h2 style={{ marginTop: "80px", marginLeft: "6%" }}>Recent Transactions:</h2>
-            <div className="filter-container">
-                <label>Filter: </label>
-                <select onChange={handleFilterChange} value={filterType} className="filter-dropdown">
-                    <option value="all">All</option>
-                    <option value="income">Only Incomes</option>
-                    <option value="expense">Only Expenses</option>
-                </select>
+                <h2 style={{ marginTop: "80px", marginLeft: "6%" }}>Recent Transactions:</h2>
+                <div className="filter-container">
+                    <select
+                        aria-label="filter"
+                        id="filter"
+                        onChange={handleFilterChange}
+                        value={filterType}
+                        className="filter-dropdown"
+                    >
+                        <option value="all">All</option>
+                        <option value="income">Only Incomes</option>
+                        <option value="expense">Only Expenses</option>
+                    </select>
+                </div>
             </div>
-            </div>
-           
+
             {filteredRecords.map((record, index) => (
                 <div
                     className="expense-card"
@@ -57,7 +74,7 @@ export const FinancialRecordList = () => {
                     style={{ borderColor: record.type === "income" ? "#f5c116" : "#38b6ff" }}
                 >
                     {editingRecord && editingRecord._id === record._id ? (
-                        <div>
+                        <div className="edit-container">
                             <input
                                 type="text"
                                 value={editingRecord.description}
@@ -68,9 +85,10 @@ export const FinancialRecordList = () => {
                             <input
                                 type="number"
                                 value={editingRecord.amount}
-                                onChange={(e) =>
-                                    setEditingRecord({ ...editingRecord, amount: parseFloat(e.target.value) })
-                                }
+                                onChange={(e) => {
+                                    const newValue = parseFloat(e.target.value);
+                                    setEditingRecord({ ...editingRecord, amount: isNaN(newValue) ? "" : newValue });
+                                }}
                             />
                             <input
                                 type="text"
@@ -86,8 +104,8 @@ export const FinancialRecordList = () => {
                                     setEditingRecord({ ...editingRecord, payment: e.target.value })
                                 }
                             />
-                            <button onClick={handleSaveEdit}>Save</button>
-                            <button onClick={handleCancelEdit}>Cancel</button>
+                            <button className="save-button" onClick={handleSaveEdit}>Save</button>
+                            <button className="cancel-button" onClick={handleCancelEdit}>Cancel</button>
                         </div>
                     ) : (
                         <>
@@ -106,8 +124,8 @@ export const FinancialRecordList = () => {
                             <div className="expense-detail">
                                 <strong>Date:</strong> {new Date(record.date).toLocaleDateString()}
                             </div>
-                            <button className="edit-button" onClick={() => handleEditClick(record)}>Edit</button>
-                            <button className="delete-button" onClick={() => handleDeleteRecord(record._id)}>Delete</button>
+                            <button role="button" aria-label="edit" id="edit" name="edit" className="edit-button" onClick={() => handleEditClick(record)}>Edit</button>
+                            <button role="button" name="delete" className="delete-button" onClick={() => handleDeleteRecord(record._id)}>Delete</button>
                         </>
                     )}
                 </div>
