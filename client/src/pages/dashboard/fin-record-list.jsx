@@ -67,7 +67,8 @@ export const FinancialRecordList = ({selectedMonth}) => {
                 </div>
             </div>
 
-            {filteredRecords.map((record, index) => (
+            {filteredRecords.slice().reverse().map((record, index) => (
+
                 <div
                     className="expense-card"
                     key={record._id || index}
